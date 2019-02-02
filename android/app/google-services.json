@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "927027752009",
+    "firebase_url": "https://chatpool-e263f.firebaseio.com",
+    "project_id": "chatpool-e263f",
+    "storage_bucket": "chatpool-e263f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927027752009:android:9bb23ec06671c0f4",
+        "android_client_info": {
+          "package_name": "com.example.chatpool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927027752009-c0dcrdhkbsrkvccgjvt3mn0nvm7gnu64.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chatpool",
+            "certificate_hash": "35af7dec4ed2cb265096b041415b27c768730691"
+          }
+        },
+        {
+          "client_id": "927027752009-2l06s31831ep1m3pkc56b49c73je6r5v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYn9_AOtfme7uiFPsHTZIsESyhVt8AC5k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "927027752009-2l06s31831ep1m3pkc56b49c73je6r5v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
