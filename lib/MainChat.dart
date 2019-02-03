@@ -10,6 +10,11 @@ class MainScreenState extends State<MainScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          child:Icon(Icons.perm_contact_calendar),
+          onPressed:(){
+            _showFriends();
+          }),
       appBar: AppBar(
         title: Text(MAIN_SCREEN_APP_BAR_TITLE),
         actions: <Widget>[
@@ -34,5 +39,9 @@ class MainScreenState extends State<MainScreen>{
   void _signOutWithGoogle() async{
     await signOutWithGoogle();
     Navigator.of(context).pushReplacementNamed('/');
+  }
+
+  void _showFriends(){
+    Navigator.of(context).pushNamed('/main/friends');
   }
 }

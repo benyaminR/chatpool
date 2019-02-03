@@ -9,3 +9,5 @@ const String USERS_ABOUT_FIELD = 'about';
 const String USER_DISPLAY_NAME_FIELD = 'display name';
 const String USER_ID_FIELD = 'id';
 const String USER_PHOTO_URI = 'photo uri';
+///SharedPreferences
+const String SHARED_PREFERENCES_USER_ID = "id";

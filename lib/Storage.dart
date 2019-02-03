@@ -5,6 +5,12 @@ final Firestore _firestore = Firestore.instance;
 ///creates a new users in the cloud with its firebase' userInfo
 Future<Null> createUserProfile(FirebaseUser firebase) async{
 
+  //add user id
+  SharedPreferences.getInstance().then((sp){
+    sp.setString(SHARED_PREFERENCES_USER_ID, firebase.uid.toString());
+  });
+
+
   //get user's document
   final QuerySnapshot result = await Firestore
       .instance
