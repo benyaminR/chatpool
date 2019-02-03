@@ -11,6 +11,7 @@ import 'Consts.dart';
 part 'Login.dart';
 part 'Authentication.dart';
 part 'MainChat.dart';
+part 'Storage.dart';
 
 void main() => runApp(MyApp());
 

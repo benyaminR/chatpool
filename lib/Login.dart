@@ -15,7 +15,7 @@ class LoginScreenState extends State<LoginScreen>{
     _firebaseAuth
         .onAuthStateChanged
         .firstWhere((firebaseUser)=> firebaseUser != null) // check if user is signed in
-        .then((firebaseUser) => _redirectToMainScreen());
+        .then((firebaseUser) => _redirectToMainScreen(firebaseUser));
 
   }
 
@@ -45,12 +45,16 @@ class LoginScreenState extends State<LoginScreen>{
   }
 
   void _signInWithGoogle() async{
-    await signInWithGoogle();
-    _redirectToMainScreen();
+    FirebaseUser firebaseUser = await signInWithGoogle();
+    _redirectToMainScreen(firebaseUser);
   }
 
   ///redirect user to main screen
-  void _redirectToMainScreen(){
-    Navigator.of(context).pushReplacementNamed('/main');
+  void _redirectToMainScreen(FirebaseUser firebaseUser) async{
+    await createUserProfile(firebaseUser).then((value){
+      Navigator.of(context).pushReplacementNamed('/main');
+    });
+
+
   }
 }
