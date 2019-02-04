@@ -15,7 +15,7 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
   final QuerySnapshot result = await Firestore
       .instance
       .collection(USERS_COLLECTION)
-      .where(USER_ID_FIELD, isEqualTo: firebase.uid)
+      .where(USER_ID, isEqualTo: firebase.uid)
       .getDocuments();
   final List<DocumentSnapshot> documents = result.documents;
 
@@ -25,10 +25,11 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
         .collection(USERS_COLLECTION) //users
         .document(firebase.uid)
         .setData({
-      USER_DISPLAY_NAME_FIELD: firebase.displayName, //name
+      USER_DISPLAY_NAME: firebase.displayName, //name
       USERS_ABOUT_FIELD: 'helloWorld',                //about
-      USER_ID_FIELD: firebase.uid,                    //id
-      USER_PHOTO_URI: firebase.photoUrl               //photo
+      USER_ID: firebase.uid,                     //id
+      USER_PHOTO_URI: firebase.photoUrl,
+      USER_EMAIL: firebase.email
     });
   }
 }

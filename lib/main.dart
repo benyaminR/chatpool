@@ -9,14 +9,16 @@ import 'Consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
-
+import 'Utils.dart';
 
 part 'Login.dart';
 part 'Authentication.dart';
 part 'MainChat.dart';
 part 'Storage.dart';
 part 'Friends.dart';
+part 'Chat.dart';
+part 'Communication.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -28,7 +30,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginScreen(),
         '/main' : (context) => MainScreen(),
-        '/main/friends' : (context) => FriendsScreen()
+        '/main/friends' : (context) => FriendsScreen(),
+        '/main/chat' : (context) => ChatScreen()
       },
     );
   }

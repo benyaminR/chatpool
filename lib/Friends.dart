@@ -46,48 +46,48 @@ class FriendsScreenState extends State<FriendsScreen>{
   }
 
   Widget _friendTileBuilder(DocumentSnapshot document) {
+    print('ids: $id');
 
-    if(document[USER_ID_FIELD] == id){
-      return null;
-    }
+    if(document[USER_ID] == id)
+      return Container();
 
-    return ListTile(
-      title: Row(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(8.0),
-            child: Material(
-              child: CachedNetworkImage(
-                placeholder: Container(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+      return ListTile(
+        title: Row(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(8.0),
+              child: Material(
+                child: CachedNetworkImage(
+                  placeholder: Container(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                    ),
                   ),
+                  imageUrl: document[USER_PHOTO_URI],
+                  width: 50.0,
+                  height: 50.0,
                 ),
-                imageUrl: document[USER_PHOTO_URI],
-                width: 50.0,
-                height: 50.0,
+                borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                clipBehavior: Clip.hardEdge,
               ),
-              borderRadius: BorderRadius.all(Radius.circular(100.0)),
-              clipBehavior: Clip.hardEdge,
             ),
-          ),
-          Text(document[USER_DISPLAY_NAME_FIELD])
-        ],
-      ),
-      onTap: () {
-        Toast.show(document[USER_DISPLAY_NAME_FIELD], context,
-            gravity: Toast.BOTTOM, duration: Toast.LENGTH_SHORT);
-      },
-    );
-
+            Text(document[USER_DISPLAY_NAME])
+          ],
+        ),
+        onTap: () {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) =>
+                  ChatScreen(friendId: document[USER_ID])));
+        },
+      );
   }
-
-  _getPreferences() async{
+  _getPreferences()async{
     var prefs = await SharedPreferences.getInstance();
     id = await prefs.get(SHARED_PREFERENCES_USER_ID);
     setState(() {
 
     });
   }
+
 
 }
