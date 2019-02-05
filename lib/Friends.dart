@@ -109,15 +109,31 @@ class FriendsScreenState extends State<FriendsScreen>{
 
   _addFriend(String friendId) async{
     var time = DateTime.now().millisecondsSinceEpoch.toString();
+
+    bool isNewFriend = false;
+
     await _firestore
-        .collection(USERS_COLLECTION)
-        .document(friendId)
-        .collection(FRIENDS_COLLECTION)
-        .document(time)
-        .setData({
-      FRIEND_ID : friendId,
-      FRIEND_TIME_ADDED : time
+    .collection(USERS_COLLECTION)
+    .document(id)
+    .collection(FRIENDS_COLLECTION)
+    .where(FRIEND_ID,isEqualTo: friendId)
+    .getDocuments().then((value){
+      if(value.documents.isEmpty){
+        isNewFriend = true;
+      }
     });
+
+    if(isNewFriend) {
+      await _firestore
+          .collection(USERS_COLLECTION)
+          .document(id)
+          .collection(FRIENDS_COLLECTION)
+          .document(time)
+          .setData({
+        FRIEND_ID: friendId,
+        FRIEND_TIME_ADDED: time
+      });
+    }
   }
   _getPreferences()async{
     var prefs = await SharedPreferences.getInstance();
