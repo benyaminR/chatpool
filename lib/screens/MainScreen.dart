@@ -69,7 +69,6 @@ class MainScreenState extends State<MainScreen>{
   }
 
   Widget _friendTileBuilder(DocumentSnapshot document) {
-
     return StreamBuilder(
       stream: Stream.fromFuture(getFriendById(document[FRIEND_ID])),
       builder: (context,AsyncSnapshot<DocumentSnapshot> snapshot){
@@ -80,7 +79,7 @@ class MainScreenState extends State<MainScreen>{
         return ListTile(
           title: Text(snapshot.data.data[USER_DISPLAY_NAME]),
           leading: Container(
-            margin: EdgeInsets.all(8.0),
+            margin: EdgeInsets.all(MAINSCREEN_FRIEND_PHOTO_MARGIN),
             child: Material(
               child: CachedNetworkImage(
                 placeholder: Container(
@@ -89,17 +88,57 @@ class MainScreenState extends State<MainScreen>{
                   ),
                 ),
                 imageUrl: snapshot.data.data[USER_PHOTO_URI],
-                width: 50.0,
-                height: 50.0,
+                width: MAINSCREEN_FRIEND_PHOTO_WIDTH,
+                height: MAINSCREEN_FRIEND_PHOTO_HEIGHT,
               ),
-              borderRadius: BorderRadius.all(Radius.circular(80.0)),
-              clipBehavior: Clip.hardEdge,
+              borderRadius: BorderRadius.all(Radius.circular(MAINSCREEN_FRIEND_PHOTO_RADIUS)),
+              clipBehavior: Clip.antiAlias,
             ),
           ),
+          //navigate to chatScreen
+          onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context)=>ChatScreen(friendId:snapshot.data.data[USER_ID])
+              )
+          ),
+          onLongPress: ()=>_longPressAlertDialog(snapshot.data.data[USER_DISPLAY_NAME],snapshot.data.data[USER_ID]),
         );
       },
     );
+  }
 
+  _longPressAlertDialog(String displayName,String userId){
+    showDialog(context: context,builder: (context){
+      return AlertDialog(
+        title:Align(
+          alignment:Alignment.centerLeft,
+            child:Icon(Icons.delete)
+        ),
+        content:Text('Do you want to delete $displayName?'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('delete'),
+            onPressed: (){
+              Navigator.pop(context);
+              _deleteUser(userId);
+            },
+          ),
+          FlatButton(
+            child: Text('cancel'),
+            onPressed: ()=> Navigator.pop(context),
+          )
+        ],
+      );
+    });
+  }
+
+  _deleteUser(String userId){
+    _firestore
+    .collection(USERS_COLLECTION)      //users
+        .document(id)                  //me
+        .collection(FRIENDS_COLLECTION)//my friends
+        .document(userId)              //this friend
+        .delete()                      //delete
+        .then((_)=>setState((){}));    //reload ui
   }
 
   void _signOutWithGoogle() async{

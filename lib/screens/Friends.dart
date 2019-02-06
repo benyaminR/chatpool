@@ -55,7 +55,7 @@ class FriendsScreenState extends State<FriendsScreen>{
         title: Row(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.all(8.0),
+              margin: EdgeInsets.all(FRIENDS_PHOTO_MARGIN),
               child: Material(
                 child: CachedNetworkImage(
                   placeholder: Container(
@@ -64,11 +64,11 @@ class FriendsScreenState extends State<FriendsScreen>{
                     ),
                   ),
                   imageUrl: document[USER_PHOTO_URI],
-                  width: 50.0,
-                  height: 50.0,
+                  width: FRIENDS_PHOTO_WIDTH,
+                  height: FRIENDS_PHOTO_HEIGHT,
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(80.0)),
-                clipBehavior: Clip.hardEdge,
+                borderRadius: BorderRadius.all(Radius.circular(FRIENDS_PHOTO_RADIUS)),
+                clipBehavior: Clip.antiAlias,
               ),
             ),
             Text(document[USER_DISPLAY_NAME])
@@ -128,7 +128,7 @@ class FriendsScreenState extends State<FriendsScreen>{
           .collection(USERS_COLLECTION)
           .document(id)
           .collection(FRIENDS_COLLECTION)
-          .document(time)
+          .document(friendId)
           .setData({
         FRIEND_ID: friendId,
         FRIEND_TIME_ADDED: time

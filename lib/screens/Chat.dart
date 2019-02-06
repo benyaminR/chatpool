@@ -48,7 +48,7 @@ class ChatScreenState extends State<ChatScreen>{
     return  Row(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.all(8.0),
+          margin: EdgeInsets.all(2.0),
           child: Material(
             child: CachedNetworkImage(
               placeholder: Container(
@@ -59,7 +59,7 @@ class ChatScreenState extends State<ChatScreen>{
               height: APP_BAR_IMAGE_HEIGHT,
             ),
             borderRadius: BorderRadius.all(Radius.circular(APP_BAR_IMAGE_RADIUS)),
-            clipBehavior: Clip.hardEdge,
+            clipBehavior: Clip.antiAlias,
           ),
         ),
         Text(friendDisplayName)

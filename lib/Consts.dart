@@ -34,9 +34,9 @@ const String MESSAGE_TYPE_TEXT = 'text';
 
 ///Doubles
 ///Chat
-const double APP_BAR_IMAGE_WIDTH = 50.0;
-const double APP_BAR_IMAGE_HEIGHT = 50.0;
-const double APP_BAR_IMAGE_RADIUS = 100.0;
+const double APP_BAR_IMAGE_WIDTH = 40.0;
+const double APP_BAR_IMAGE_HEIGHT = 40.0;
+const double APP_BAR_IMAGE_RADIUS = 25.0;
 const double MESSAGE_RADIUS = 6.0;
 const double MESSAGE_PADDING = 4.0;
 const double MESSAGE_MARGIN = 4.0;
@@ -49,6 +49,18 @@ const double INPUT_TEXT_FIELD_PADDING = 10.0;
 const double SEND_BUTTON_RADIUS = 100.0;
 const double SEND_BUTTON_PADDING = 8.0;
 const double SEND_BUTTON_MARGIN = 4.0;
+
+///MainScreen
+const MAINSCREEN_FRIEND_PHOTO_WIDTH = 45.0;
+const MAINSCREEN_FRIEND_PHOTO_HEIGHT = 45.0;
+const MAINSCREEN_FRIEND_PHOTO_RADIUS = 25.0;
+const MAINSCREEN_FRIEND_PHOTO_MARGIN = 2.0;
+
+///Friends
+const FRIENDS_PHOTO_WIDTH = 40.0;
+const FRIENDS_PHOTO_HEIGHT = 40.0;
+const FRIENDS_PHOTO_RADIUS = 25.0;
+const FRIENDS_PHOTO_MARGIN = 2.0;
 
 ///Colors
 ///Chat
