@@ -7,7 +7,7 @@ const String GOOGLE_LOGIN_BUTTON = 'login with Google';
 const String MAIN_SCREEN_APP_BAR_TITLE = 'main screen';
 ///Storage
 const String USERS_COLLECTION = 'users';
-const String USERS_ABOUT_FIELD = 'about';
+const String USER_ABOUT_FIELD = 'about';
 const String USER_DISPLAY_NAME = 'display name';
 const String USER_ID = 'id';
 const String USER_PHOTO_URI = 'photo uri';
@@ -38,9 +38,9 @@ const double APP_BAR_IMAGE_WIDTH = 40.0;
 const double APP_BAR_IMAGE_HEIGHT = 40.0;
 const double APP_BAR_IMAGE_RADIUS = 25.0;
 const double MESSAGE_RADIUS = 6.0;
-const double MESSAGE_PADDING = 4.0;
+const double MESSAGE_PADDING = 6.0;
 const double MESSAGE_MARGIN = 4.0;
-const double MESSAGE_WIDTH = 170.0;
+const double MESSAGE_WIDTH = 220.0;
 const double MESSAGE_FONT_SIZE = 16.0;
 const double MESSAGE_DATE_FONT_SIZE = 9.0;
 const double MESSAGE_DATE_MARGIN = 2.0;
@@ -61,67 +61,17 @@ const FRIENDS_PHOTO_WIDTH = 40.0;
 const FRIENDS_PHOTO_HEIGHT = 40.0;
 const FRIENDS_PHOTO_RADIUS = 25.0;
 const FRIENDS_PHOTO_MARGIN = 2.0;
+const ADD_FRIEND_DIALOG_PHOTO_RADIUS = 120.0;
 
 ///Colors
 ///Chat
-const Color MESSAGE_FONT_COLOR = Colors.black;
-const Color MESSAGE_BACKGROUND_COLOR = Colors.white;
-const Color MESSAGE_DATE_FONT_COLOR = Colors.black54;
-const Color INPUT_TEXT_FIELD_BACKGROUND_COLOR = Colors.white;
-const Color SEND_BUTTON_BACKGROUND_COLOR = Colors.white;
-
-
-/*GestureDetector(
-//onLongPress: _showDeleteDialog(document[MESSAGE_TIMESTAMP]),
-child: Column(
-children: <Widget>[
-Row(
-mainAxisAlignment:document[MESSAGE_ID_FROM]==id ? MainAxisAlignment.end: MainAxisAlignment.start,
-children: <Widget>[
-Container(
-decoration: BoxDecoration(
-color: MESSAGE_BACKGROUND_COLOR,
-borderRadius: BorderRadius.circular(MESSAGE_RADIUS)
-),
-//width: MESSAGE_WIDTH,
-margin: EdgeInsets.all(MESSAGE_MARGIN),
-child: Column(
-children: <Widget>[
-Container(
-padding: EdgeInsets.all(MESSAGE_PADDING),
-margin: EdgeInsets.all(4.0),
-child:Row(
-mainAxisAlignment:MainAxisAlignment.start,
-children: <Widget>[
-Text(document[MESSAGE_CONTENT],
-style: TextStyle(
-fontSize:MESSAGE_FONT_SIZE,
-color: MESSAGE_FONT_COLOR
-)
-),
-],
-) ,
-)
-,
-Container(
-margin:EdgeInsets.all(MESSAGE_DATE_MARGIN),
-child:Row(
-mainAxisAlignment:MainAxisAlignment.end,
-children: <Widget>[
-Text(timeConverter(int.parse(document[MESSAGE_TIMESTAMP])),
-style: TextStyle(
-fontSize:MESSAGE_DATE_FONT_SIZE,
-color: MESSAGE_DATE_FONT_COLOR
-),
-)
-],
-),
-)
-],
-)
-)
-],
-)
-],
-),
-);*/
+const Color MESSAGE_FONT_COLOR = Colors.white;
+const Color MESSAGE_BACKGROUND_COLOR = Colors.lightBlue;
+const Color MESSAGE_DATE_FONT_COLOR = Colors.white;
+const Color INPUT_TEXT_FIELD_BACKGROUND_COLOR = Colors.lightBlue;
+const Color SEND_BUTTON_BACKGROUND_COLOR = Colors.green;
+const Color CHAT_SCREEN_BACKGROUND = Colors.white;
+const Color PICK_BUTTON_BACKGROUND_COLOR = Colors.yellow;
+const Color PICK_BUTTON_ICON_COLOR = Colors.white;
+const Color SEND_BUTTON_ICON_COLOR = Colors.white;
+const Color INPUT_TEXT_FIELD_HINT_COLOR = Colors.white;

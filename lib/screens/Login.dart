@@ -8,14 +8,23 @@ class LoginScreen extends StatefulWidget{
 
 class LoginScreenState extends State<LoginScreen>{
 
+  bool loading = true;
+
   @override
   void initState() {
     super.initState();
 
     _firebaseAuth
         .onAuthStateChanged
-        .firstWhere((firebaseUser)=> firebaseUser != null) // check if user is signed in
-        .then((firebaseUser) => _redirectToMainScreen(firebaseUser));
+        .first.then((firebaseUser){
+      if(firebaseUser != null){
+        _redirectToMainScreen(firebaseUser);
+      }else{
+        setState(() {
+          loading = false;
+        });
+      }
+    });
 
   }
 
@@ -25,26 +34,28 @@ class LoginScreenState extends State<LoginScreen>{
         appBar: AppBar(
           title: Text('Login screen'),
         ),
-        body: _loginScreenBody(),
+        body: loading ? _loadingBody() : _loginScreenBody(),
       );
+  }
+
+  Widget _loadingBody(){
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 
   ///main body of login screen
   Widget _loginScreenBody(){
     return Center(
      child: FlatButton(
-         onPressed: (){
-           print('clicked');
-
-           _signInWithGoogle();
-
-         },
+         onPressed: ()=> _signInWithGoogle(),
          child: Text(GOOGLE_LOGIN_BUTTON),
          )
     );
   }
 
   void _signInWithGoogle() async{
+
     FirebaseUser firebaseUser = await signInWithGoogle();
     _redirectToMainScreen(firebaseUser);
   }

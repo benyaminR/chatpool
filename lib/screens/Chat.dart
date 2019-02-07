@@ -14,13 +14,14 @@ class ChatScreenState extends State<ChatScreen>{
 
   final String friendId;
 
+  var imageFile;
+
   String friendDisplayName;
   String friendPhotoUri;
   String groupId;
   String id;
 
   final TextEditingController _textEditingController = new TextEditingController();
-  final ScrollController _scrollController = new ScrollController();
 
   ChatScreenState({@required this.friendId});
 
@@ -31,12 +32,16 @@ class ChatScreenState extends State<ChatScreen>{
 
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.grey,
-        body: (friendPhotoUri == null || friendDisplayName == null) ?  CircularProgressIndicator(): _chatScreenBody(),
+    backgroundColor: CHAT_SCREEN_BACKGROUND,
+        body: (friendPhotoUri == null || friendDisplayName == null) ?
+          Center(
+              child:CircularProgressIndicator()
+          )
+            :
+          _chatScreenBody(),
         appBar: AppBar(
           title: (friendPhotoUri == null || friendDisplayName == null) ?  null :_appBarTitle(),
           actions: _appBarActions(),
@@ -48,7 +53,6 @@ class ChatScreenState extends State<ChatScreen>{
     return  Row(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.all(2.0),
           child: Material(
             child: CachedNetworkImage(
               placeholder: Container(
@@ -85,19 +89,21 @@ class ChatScreenState extends State<ChatScreen>{
       child:Container(
           child: StreamBuilder(
             stream: _firestore
-                .collection(MESSAGES_COLLECTION)
-                .document(groupId)
-                .collection(groupId)
-                .orderBy(MESSAGE_TIMESTAMP,descending: true)
+                .collection(MESSAGES_COLLECTION)             //Messages
+                .document(groupId)                           //this groupId
+                .collection(groupId)                         //their collection of messages
+                .orderBy(MESSAGE_TIMESTAMP,descending: true) // order messages by time
                 .snapshots(),
             builder: (BuildContext buildContext,AsyncSnapshot<QuerySnapshot>snapshots){
+              //show error if there is any
               if(snapshots.hasError)
                 return Text(snapshots.error);
+              //if connecting show progressIndicator
               if(snapshots.connectionState == ConnectionState.waiting)
                 return CircularProgressIndicator();
+              //show users
               else
                 return ListView.builder(
-                  controller: _scrollController,
                   reverse: true,
                   itemCount: snapshots.data.documents.length,
                   itemBuilder:(context,index)=> _chatItemBuilder(snapshots.data.documents[index]),
@@ -119,16 +125,41 @@ class ChatScreenState extends State<ChatScreen>{
                       color: INPUT_TEXT_FIELD_BACKGROUND_COLOR,
                       borderRadius: BorderRadius.circular(INPUT_TEXT_FIELD_RADIUS)
                   ),
-                  child: TextField(
+                  child: imageFile == null ? TextField(
                     autocorrect: true,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(INPUT_TEXT_FIELD_PADDING),
                       border: InputBorder.none,
                       hintText: TEXT_FIELD_HINT,
+                      hintStyle: TextStyle(
+                        color: INPUT_TEXT_FIELD_HINT_COLOR
+                      )
                     ),
                     controller: _textEditingController,
+                  )
+                      : Container(
+                    padding: EdgeInsets.all(10.0),
+                    margin: EdgeInsets.all(2.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Image(
+                      image: FileImage(imageFile),
+                  ),
                   ),
                 )
+            ),
+            GestureDetector(
+              child: Container(
+                padding: EdgeInsets.all(SEND_BUTTON_PADDING),
+                margin: EdgeInsets.all(SEND_BUTTON_MARGIN),
+                decoration: BoxDecoration(
+                  color: PICK_BUTTON_BACKGROUND_COLOR,
+                  borderRadius: BorderRadius.circular(SEND_BUTTON_RADIUS),
+                ),
+                child:Icon(Icons.image,color: PICK_BUTTON_ICON_COLOR,),
+              ),
+              onTap: ()=>null,
             ),
             GestureDetector(
               child: Container(
@@ -138,9 +169,9 @@ class ChatScreenState extends State<ChatScreen>{
                   color: SEND_BUTTON_BACKGROUND_COLOR,
                   borderRadius: BorderRadius.circular(SEND_BUTTON_RADIUS),
                 ),
-                child:  Icon(Icons.send),
+                child: Icon(Icons.send,color: SEND_BUTTON_ICON_COLOR,),
               ),
-              onTap: _sendMessage,
+              onTap:()=> sendMessage(_textEditingController,groupId,id,friendId),
             ),
           ],
         ) ,
@@ -148,33 +179,41 @@ class ChatScreenState extends State<ChatScreen>{
   }
 
   Widget _chatItemBuilder(DocumentSnapshot document){
-
-    var timeSent = timeConverter(int.parse(document[MESSAGE_TIMESTAMP]));
-
     return GestureDetector(
-        child: Column(
+        child: Row(
+          mainAxisAlignment: document[MESSAGE_ID_FROM] == id ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: document[MESSAGE_ID_FROM] == id ? MainAxisAlignment.end:MainAxisAlignment.start,
-              children: <Widget>[
-                Flexible(
-                  child: Container(
-                    width: MESSAGE_WIDTH,
-                    padding: EdgeInsets.all(MESSAGE_PADDING),
-                    margin: EdgeInsets.all(MESSAGE_MARGIN),
-                    decoration: BoxDecoration(
-                        color: MESSAGE_BACKGROUND_COLOR,
-                        borderRadius: BorderRadius.circular(MESSAGE_RADIUS)
-                    ),
-                    child: Text(document[MESSAGE_CONTENT],
-                      style: TextStyle(
-                          fontSize: MESSAGE_FONT_SIZE,
-                          color: MESSAGE_FONT_COLOR
-                      ),
-                    ),
+            Flexible(
+              child: Container(
+                  width: MESSAGE_WIDTH,
+                  padding: EdgeInsets.all(MESSAGE_PADDING),
+                  margin: EdgeInsets.all(MESSAGE_MARGIN),
+                  decoration: BoxDecoration(
+                      color: MESSAGE_BACKGROUND_COLOR,
+                      borderRadius: BorderRadius.circular(MESSAGE_RADIUS)
                   ),
-                ),
-              ],
+                  child:Column(
+                    children: <Widget>[
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child:Text(document[MESSAGE_CONTENT],
+                            style: TextStyle(
+                                fontSize: MESSAGE_FONT_SIZE,
+                                color: MESSAGE_FONT_COLOR
+                            ),
+                          )
+                      ),
+                      Align(
+                        alignment:Alignment.centerRight ,
+                        child: Text(timeConverter(int.parse(document[MESSAGE_TIMESTAMP])),
+                          style: TextStyle(
+                              fontSize: MESSAGE_DATE_FONT_SIZE,
+                              color: MESSAGE_FONT_COLOR
+                          ),),
+                      )
+                    ],
+                  )
+              ),
             ),
           ],
         ),
@@ -183,7 +222,6 @@ class ChatScreenState extends State<ChatScreen>{
           document[MESSAGE_ID_FROM]== id ? _showDeleteDialog(document[MESSAGE_TIMESTAMP]): null;
         }
     );
-
   }
 
   _showDeleteDialog(String timestamp){
@@ -196,7 +234,7 @@ class ChatScreenState extends State<ChatScreen>{
             child: Text('delete'),
             onPressed:(){
               Navigator.pop(context);
-              _deleteMessage(timestamp);},
+              _deleteMessage(timestamp,groupId);},
           ),
           FlatButton(
             child: Text('cancel'),
@@ -207,50 +245,12 @@ class ChatScreenState extends State<ChatScreen>{
     });
   }
 
-  _deleteMessage(String timestamp) async{
-      await _firestore
-        .collection(MESSAGES_COLLECTION)
-        .document(groupId)
-        .collection(groupId)
-        .document(timestamp)
-        .delete();
 
-  }
-
-  _sendMessage(){
-    //save time to avoid deleting issues
-    var timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-
-    var msg = _textEditingController.value.text;
-    if(msg.isNotEmpty) {
-      _textEditingController.clear();
-      var documentReference = Firestore.instance
-          .collection(MESSAGES_COLLECTION)
-          .document(groupId)
-          .collection(groupId)
-          .document(timestamp);
-
-      Firestore.instance.runTransaction((transaction) async {
-        await transaction.set(
-            documentReference,
-            {
-              MESSAGE_ID_FROM: id,
-              MESSAGE_ID_TO: friendId,
-              MESSAGE_TIMESTAMP: timestamp,
-              MESSAGE_CONTENT: msg,
-              MESSAGE_TYPE: MESSAGE_TYPE_TEXT
-            }
-        );
-      });
-    }
-
-    _scrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
-
-  }
   _init(){
     _getFriendInfo();
     _getGroupChatId();
   }
+
 
   _getGroupChatId()async{
     var sp = await SharedPreferences.getInstance();

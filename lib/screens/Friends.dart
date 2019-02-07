@@ -1,6 +1,5 @@
 part of chat_pool;
 
-
 class FriendsScreen extends StatefulWidget{
   @override
   State<StatefulWidget> createState()=>FriendsScreenState();
@@ -8,13 +7,15 @@ class FriendsScreen extends StatefulWidget{
 
 class FriendsScreenState extends State<FriendsScreen>{
 
-  var id;
+  //currentUser
+  String id;
 
   @override
   void initState() {
     super.initState();
     _getPreferences();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +29,7 @@ class FriendsScreenState extends State<FriendsScreen>{
   Widget _friendsScreenBody(){
       return StreamBuilder(
         stream: _firestore
-            .collection(USERS_COLLECTION)
+            .collection(USERS_COLLECTION) //users
             .snapshots(),
         builder: (BuildContext buildContext,AsyncSnapshot<QuerySnapshot> snapshots){
           if(!snapshots.hasData)
@@ -46,7 +47,6 @@ class FriendsScreenState extends State<FriendsScreen>{
   }
 
   Widget _friendTileBuilder(DocumentSnapshot document) {
-    print('ids: $id');
 
     if(document[USER_ID] == id)
       return Container();
@@ -88,14 +88,15 @@ class FriendsScreenState extends State<FriendsScreen>{
         title: Text(friendDisplayName),
         content: CircleAvatar(
           backgroundImage: CachedNetworkImageProvider(friendPhotoUri),
-          radius: 120.0,
+          radius: ADD_FRIEND_DIALOG_PHOTO_RADIUS,
         ),
         actions: <Widget>[
           FlatButton(
             child: Text('add'),
             onPressed: () {
               Navigator.pop(context);
-              _addFriend(friendId);
+              Toast.show('you have added $friendDisplayName', context,duration: Toast.LENGTH_SHORT);
+              addFriend(friendId,id);
             },
           ),
           FlatButton(
@@ -107,34 +108,6 @@ class FriendsScreenState extends State<FriendsScreen>{
     });
   }
 
-  _addFriend(String friendId) async{
-    var time = DateTime.now().millisecondsSinceEpoch.toString();
-
-    bool isNewFriend = false;
-
-    await _firestore
-    .collection(USERS_COLLECTION)
-    .document(id)
-    .collection(FRIENDS_COLLECTION)
-    .where(FRIEND_ID,isEqualTo: friendId)
-    .getDocuments().then((value){
-      if(value.documents.isEmpty){
-        isNewFriend = true;
-      }
-    });
-
-    if(isNewFriend) {
-      await _firestore
-          .collection(USERS_COLLECTION)
-          .document(id)
-          .collection(FRIENDS_COLLECTION)
-          .document(friendId)
-          .setData({
-        FRIEND_ID: friendId,
-        FRIEND_TIME_ADDED: time
-      });
-    }
-  }
   _getPreferences()async{
     var prefs = await SharedPreferences.getInstance();
     id = await prefs.get(SHARED_PREFERENCES_USER_ID);
