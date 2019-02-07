@@ -10,13 +10,12 @@ Future<DocumentSnapshot> getFriendById(String id) async{
   return documents.documents[0];
 }
 
-sendMessage(TextEditingController controller,String groupId,String id,String friendId){
+sendMessage(String msg,String groupId,String id,String friendId){
   //save time to avoid deleting issues
   var timestamp = DateTime
       .now()
       .millisecondsSinceEpoch
       .toString();
-  var msg = controller.value.text;
 
   var documentReference = Firestore.instance
       .collection(MESSAGES_COLLECTION)
@@ -99,19 +98,19 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
         .collection(USERS_COLLECTION) //users
         .document(firebase.uid)
         .setData({
-      USER_DISPLAY_NAME: firebase.displayName, //name
-      USER_ABOUT_FIELD: 'helloWorld',                //about
-      USER_ID: firebase.uid,                     //id
-      USER_PHOTO_URI: firebase.photoUrl,
-      USER_EMAIL: firebase.email
+      USER_DISPLAY_NAME: firebase.displayName,        //name
+      USER_ABOUT_FIELD: null,                         //about
+      USER_ID: firebase.uid,                          //id
+      USER_PHOTO_URI: null,                           //userProfile
+      USER_EMAIL: firebase.email                      //email
     });
   }
 }
 Future deleteUser(String userId,String id) async{
  await _firestore
-      .collection(USERS_COLLECTION)      //users
-      .document(id)                  //me
-      .collection(FRIENDS_COLLECTION)//my friends
-      .document(userId)              //this friend
-      .delete();                      //delete
+      .collection(USERS_COLLECTION)     //users
+      .document(id)                     //me
+      .collection(FRIENDS_COLLECTION)   //my friends
+      .document(userId)                 //this friend
+      .delete();                        //delete
 }

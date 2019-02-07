@@ -171,7 +171,12 @@ class ChatScreenState extends State<ChatScreen>{
                 ),
                 child: Icon(Icons.send,color: SEND_BUTTON_ICON_COLOR,),
               ),
-              onTap:()=> sendMessage(_textEditingController,groupId,id,friendId),
+              onTap:(){
+                if(_textEditingController.value.text.isNotEmpty) {
+                  sendMessage(_textEditingController.value.text, groupId, id, friendId);
+                  _textEditingController.clear();
+                }
+              },
             ),
           ],
         ) ,
@@ -265,7 +270,7 @@ class ChatScreenState extends State<ChatScreen>{
   _getFriendInfo()async{
     var document = await getFriendById(friendId);
     friendDisplayName = document[USER_DISPLAY_NAME];
-    friendPhotoUri = document[USER_PHOTO_URI];
+    friendPhotoUri = document[USER_PHOTO_URI] != null ?  document[USER_PHOTO_URI] : USER_IMAGE_PLACE_HOLDER;
     setState(() {
     });
   }

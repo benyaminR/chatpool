@@ -75,3 +75,6 @@ const Color PICK_BUTTON_BACKGROUND_COLOR = Colors.yellow;
 const Color PICK_BUTTON_ICON_COLOR = Colors.white;
 const Color SEND_BUTTON_ICON_COLOR = Colors.white;
 const Color INPUT_TEXT_FIELD_HINT_COLOR = Colors.white;
+
+///Links
+const String USER_IMAGE_PLACE_HOLDER = 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png';

@@ -94,7 +94,7 @@ class MainScreenState extends State<MainScreen>{
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
                   ),
                 ),
-                imageUrl: snapshot.data.data[USER_PHOTO_URI],
+                imageUrl: snapshot.data.data[USER_PHOTO_URI] != null ? snapshot.data.data[USER_PHOTO_URI]: USER_IMAGE_PLACE_HOLDER,
                 width: MAINSCREEN_FRIEND_PHOTO_WIDTH,
                 height: MAINSCREEN_FRIEND_PHOTO_HEIGHT,
               ),

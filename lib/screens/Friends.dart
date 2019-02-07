@@ -63,7 +63,7 @@ class FriendsScreenState extends State<FriendsScreen>{
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
                     ),
                   ),
-                  imageUrl: document[USER_PHOTO_URI],
+                  imageUrl: document[USER_PHOTO_URI] != null ? document[USER_PHOTO_URI] : USER_IMAGE_PLACE_HOLDER,
                   width: FRIENDS_PHOTO_WIDTH,
                   height: FRIENDS_PHOTO_HEIGHT,
                 ),
@@ -87,7 +87,7 @@ class FriendsScreenState extends State<FriendsScreen>{
       return AlertDialog(
         title: Text(friendDisplayName),
         content: CircleAvatar(
-          backgroundImage: CachedNetworkImageProvider(friendPhotoUri),
+          backgroundImage: CachedNetworkImageProvider(friendPhotoUri != null ? friendPhotoUri : USER_IMAGE_PLACE_HOLDER),
           radius: ADD_FRIEND_DIALOG_PHOTO_RADIUS,
         ),
         actions: <Widget>[
