@@ -8,6 +8,7 @@ class MainScreen extends StatefulWidget{
 
 class MainScreenState extends State<MainScreen>{
 
+
   String id;
 
   @override
@@ -20,7 +21,6 @@ class MainScreenState extends State<MainScreen>{
         id = sp.get(SHARED_PREFERENCES_USER_ID);
       });
     });
-
   }
 
   @override
@@ -33,17 +33,24 @@ class MainScreenState extends State<MainScreen>{
           }),
       appBar: AppBar(
         title: Text(MAIN_SCREEN_APP_BAR_TITLE),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: (){
-              _signOutWithGoogle();
-            },
-          )
-        ],
+        actions: _appBarActions(),
+
       ),
       body: _mainScreenBody(),
     );
+  }
+
+  List<Widget> _appBarActions(){
+    return List.of([
+      IconButton(
+          icon: Icon(Icons.exit_to_app),
+          onPressed: ()=> _signOutWithGoogle(),
+          ),
+      IconButton(
+        icon: Icon(Icons.settings),
+        onPressed: ()=>Navigator.pushNamed(context, '/main/settings'),
+      )
+    ]);
   }
 
   Widget _mainScreenBody(){
@@ -119,7 +126,10 @@ class MainScreenState extends State<MainScreen>{
             child: Text('delete'),
             onPressed: (){
               Navigator.pop(context);
-              _deleteUser(userId);
+              deleteUser(userId,id).then((value){
+                setState(() {
+                });
+              });
             },
           ),
           FlatButton(
@@ -131,15 +141,6 @@ class MainScreenState extends State<MainScreen>{
     });
   }
 
-  _deleteUser(String userId){
-    _firestore
-    .collection(USERS_COLLECTION)      //users
-        .document(id)                  //me
-        .collection(FRIENDS_COLLECTION)//my friends
-        .document(userId)              //this friend
-        .delete()                      //delete
-        .then((_)=>setState((){}));    //reload ui
-  }
 
   void _signOutWithGoogle() async{
     await signOutWithGoogle();

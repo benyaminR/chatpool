@@ -55,7 +55,6 @@ class LoginScreenState extends State<LoginScreen>{
   }
 
   void _signInWithGoogle() async{
-
     FirebaseUser firebaseUser = await signInWithGoogle();
     _redirectToMainScreen(firebaseUser);
   }

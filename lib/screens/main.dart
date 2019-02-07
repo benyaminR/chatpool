@@ -18,7 +18,8 @@ part 'package:chatpool/screens/MainScreen.dart';
 part 'package:chatpool/screens/Friends.dart';
 part 'package:chatpool/screens/Chat.dart';
 part 'package:chatpool/utils/Communication.dart';
-
+part 'Me.dart';
+part 'Settings.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,7 +32,9 @@ class MyApp extends StatelessWidget {
         '/': (context) => LoginScreen(),
         '/main' : (context) => MainScreen(),
         '/main/friends' : (context) => FriendsScreen(),
-        '/main/chat' : (context) => ChatScreen()
+        '/main/chat' : (context) => ChatScreen(),
+        '/main/settings' : (context) => SettingsScreen(),
+        '/main/settings/me' :(context) => MeScreen()
       },
     );
   }

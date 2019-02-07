@@ -107,3 +107,11 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
     });
   }
 }
+Future deleteUser(String userId,String id) async{
+ await _firestore
+      .collection(USERS_COLLECTION)      //users
+      .document(id)                  //me
+      .collection(FRIENDS_COLLECTION)//my friends
+      .document(userId)              //this friend
+      .delete();                      //delete
+}
