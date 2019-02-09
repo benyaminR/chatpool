@@ -18,6 +18,9 @@ const String FRIEND_ID = 'friend id';
 const String FRIEND_TIME_ADDED = 'time added';
 ///SharedPreferences
 const String SHARED_PREFERENCES_USER_ID = "id";
+const String SHARED_PREFERENCES_USER_PHOTO = 'photo';
+const String SHARED_PREFERENCES_USER_DISPLAY_NAME = 'name';
+const String SHARED_PREFERENCES_USER_ABOUT = 'about';
 
 ///Chat
 const String MESSAGES_COLLECTION = 'messages';

@@ -2,8 +2,8 @@ part of chat_pool;
 
 
 class ChatScreen extends StatefulWidget{
-  final String friendId;
 
+  final String friendId;
   ChatScreen({@required this.friendId});
 
   @override

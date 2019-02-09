@@ -78,10 +78,6 @@ addFriend(String friendId,String id) async{
 final Firestore _firestore = Firestore.instance;
 ///creates a new users in the cloud with its firebase' userInfo
 Future<Null> createUserProfile(FirebaseUser firebase) async{
-  //add user id
-  SharedPreferences.getInstance().then((sp){
-    sp.setString(SHARED_PREFERENCES_USER_ID, firebase.uid.toString());
-  });
 
 
   //get user's document
@@ -94,7 +90,7 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
 
   //create a new user if the user doesn't exists
   if(documents.length == 0) {
-    _firestore
+    await _firestore
         .collection(USERS_COLLECTION) //users
         .document(firebase.uid)
         .setData({
@@ -105,6 +101,22 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
       USER_EMAIL: firebase.email                      //email
     });
   }
+
+  //update or add with every login
+  //add user id and profile image
+  await SharedPreferences.getInstance().then((sp){
+    var id = firebase.uid.toString();
+    var photoUri = documents[0][USER_PHOTO_URI];
+    var name = documents[0][USER_DISPLAY_NAME];
+    var about = documents[0][USER_ABOUT_FIELD];
+    print(about);
+    print(name);
+    sp.setString(SHARED_PREFERENCES_USER_ID, id);
+    sp.setString(SHARED_PREFERENCES_USER_PHOTO, photoUri != null ? photoUri : USER_IMAGE_PLACE_HOLDER);
+    sp.setString(SHARED_PREFERENCES_USER_DISPLAY_NAME, name);
+    sp.setString(SHARED_PREFERENCES_USER_ABOUT, about);
+  });
+
 }
 Future deleteUser(String userId,String id) async{
  await _firestore
