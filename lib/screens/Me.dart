@@ -44,7 +44,7 @@ class MeScreenState extends State<MeScreen>{
                 alignment: Alignment(1.0, 1.0),
                 child: FloatingActionButton(
                   child: Icon(Icons.camera_alt),
-                  onPressed: _showCameraDialog,
+                  onPressed:()=>_showCameraDialog(),
                 ),
               )
             ),
@@ -126,17 +126,17 @@ class MeScreenState extends State<MeScreen>{
               ListTile(
                 title: Text('Camera'),
                 leading: Icon(Icons.camera_alt),
-                onTap: _openCamera,
+                onTap:()=>_selectPhoto(ImageSource.camera),
               ),
               ListTile(
                 title: Text('Gallery'),
                 leading: Icon(Icons.photo),
-                onTap: _openGallery,
+                onTap: ()=>_selectPhoto(ImageSource.gallery),
               ),
               ListTile(
                 title: Text('Delete'),
                 leading: Icon(Icons.delete),
-                onTap: _deletePhoto,
+                onTap:()=>_deletePhoto(),
               ),
             ],
           );
@@ -155,19 +155,69 @@ class MeScreenState extends State<MeScreen>{
   }
 
 
-  _openCamera(){
-   ImagePicker.pickImage(source: ImageSource.camera).then((file){
+  _selectPhoto(ImageSource source){
+   ImagePicker.pickImage(source: source).then((file){
      _file = file;
-     print(file.path);
+     _uploadPhoto();
    });
   }
-  _openGallery(){
-    ImagePicker.pickImage(source: ImageSource.gallery).then((file){
-      _file = file;
-      print(file.path);
-    });
-  }
+
   _deletePhoto(){
+    FirebaseStorage.instance.ref().child('/profile_images/$_id').delete().then((val){
+      _firestore
+          .collection(USERS_COLLECTION)
+          .document(_id)
+          .updateData({USER_PHOTO_URI:USER_IMAGE_PLACE_HOLDER})
+          .then((val){
+        _updateSharedPreferences(USER_IMAGE_PLACE_HOLDER);
+      });
+    });
+
 
   }
+
+  _uploadPhoto(){
+    var ref = FirebaseStorage.instance.ref().child('/profile_images/$_id');
+    var task = ref.putFile(_file);
+
+    task.events.listen((event) {
+      switch (event.type) {
+        case StorageTaskEventType.failure :
+          _onError();
+          break;
+        case StorageTaskEventType.progress :
+          break;
+        case StorageTaskEventType.pause :
+          break;
+        case StorageTaskEventType.resume:
+          break;
+        case StorageTaskEventType.success : _onDone();
+        break;
+      }
+    });
+  }
+
+  _onError(){
+    Toast.show('can not upload your photo', context);
+  }
+
+  _onDone(){
+    Toast.show('your photo has been uploaded successfully', context);
+    FirebaseStorage.instance.ref().child('/profile_images/$_id').getDownloadURL().then((url){
+      _firestore.collection(USERS_COLLECTION)
+      .document(_id)
+      .updateData({USER_PHOTO_URI:url.toString()}).then((val){
+        _updateSharedPreferences(url.toString());
+      });
+    });
+
+  }
+
+  _updateSharedPreferences(String url){
+    SharedPreferences.getInstance().then((sp){
+      sp.setString(SHARED_PREFERENCES_USER_PHOTO, url);
+      _initLocale();
+    });
+  }
+
 }
