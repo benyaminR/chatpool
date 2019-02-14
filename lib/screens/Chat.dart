@@ -14,7 +14,7 @@ class ChatScreenState extends State<ChatScreen>{
 
   final String friendId;
 
-  var imageFile;
+  var _imageFile;
 
   String friendDisplayName;
   String friendPhotoUri;
@@ -125,7 +125,7 @@ class ChatScreenState extends State<ChatScreen>{
                       color: INPUT_TEXT_FIELD_BACKGROUND_COLOR,
                       borderRadius: BorderRadius.circular(INPUT_TEXT_FIELD_RADIUS)
                   ),
-                  child: imageFile == null ? TextField(
+                  child: _imageFile == null ? TextField(
                     autocorrect: true,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(INPUT_TEXT_FIELD_PADDING),
@@ -144,7 +144,7 @@ class ChatScreenState extends State<ChatScreen>{
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     child: Image(
-                      image: FileImage(imageFile),
+                      image: FileImage(_imageFile),
                   ),
                   ),
                 )
@@ -159,7 +159,7 @@ class ChatScreenState extends State<ChatScreen>{
                 ),
                 child:Icon(Icons.image,color: PICK_BUTTON_ICON_COLOR,),
               ),
-              onTap: ()=>null,
+              onTap: ()=>_pickImage(),
             ),
             GestureDetector(
               child: Container(
@@ -172,9 +172,10 @@ class ChatScreenState extends State<ChatScreen>{
                 child: Icon(Icons.send,color: SEND_BUTTON_ICON_COLOR,),
               ),
               onTap:(){
-                if(_textEditingController.value.text.isNotEmpty) {
-                  sendMessage(_textEditingController.value.text, groupId, id, friendId);
-                  _textEditingController.clear();
+                if(_imageFile!=null){
+                  _sendImage();
+                }else if(_textEditingController.value.text.isNotEmpty){
+                  _sendMessage();
                 }
               },
             ),
@@ -201,12 +202,16 @@ class ChatScreenState extends State<ChatScreen>{
                     children: <Widget>[
                       Align(
                           alignment: Alignment.centerLeft,
-                          child:Text(document[MESSAGE_CONTENT],
+                          child: document[MESSAGE_TYPE]== MESSAGE_TYPE_PHOTO?Image(image: CachedNetworkImageProvider(
+                            document[MESSAGE_CONTENT]))
+                              :
+                            Text(document[MESSAGE_CONTENT],
                             style: TextStyle(
                                 fontSize: MESSAGE_FONT_SIZE,
                                 color: MESSAGE_FONT_COLOR
                             ),
                           )
+
                       ),
                       Align(
                         alignment:Alignment.centerRight ,
@@ -251,13 +256,76 @@ class ChatScreenState extends State<ChatScreen>{
   }
 
 
+  _pickImage(){
+    ImagePicker.pickImage(source: ImageSource.gallery).then((imageFile){
+      _imageFile = imageFile;
+      setState(() {});
+    });
+  }
+
   _init(){
     _getFriendInfo();
-    _getGroupChatId();
+    _setGroupChatId();
+  }
+
+  _sendMessage(){
+    sendMessage(_textEditingController.value.text, groupId, id, friendId);
+    _textEditingController.clear();
+  }
+  _sendImage(){
+    print('imageFile: $_imageFile');
+    var timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
+
+    //TODO sendImage
+
+    //upload image file
+    FirebaseStorage
+        .instance
+        .ref()
+        .child('/media/images/$groupId/$id+$timeStamp').putFile(_imageFile)
+        .events.listen((events){
+      if(events.type == StorageTaskEventType.success){
+        _saveImageUri(timeStamp);
+      }
+    });
+
+  }
+
+  _saveImageUri(String timeStamp){
+    FirebaseStorage
+        .instance
+        .ref()
+        .child('/media/images/$groupId/$id+$timeStamp')
+    .getDownloadURL().then((uri){
+      //save in cloud
+      var fireStoreRef = _firestore
+          .collection(MESSAGES_COLLECTION)
+          .document(groupId)
+          .collection(groupId)
+          .document(timeStamp);
+      _firestore.runTransaction((transaction)async{
+        await transaction.set(
+            fireStoreRef,
+            {
+              MESSAGE_CONTENT: uri,
+              MESSAGE_TYPE : MESSAGE_TYPE_PHOTO,
+              MESSAGE_TIMESTAMP : timeStamp,
+              MESSAGE_ID_FROM : id,
+              MESSAGE_ID_TO : friendId
+            });
+      });
+
+      //clear inputSegment
+      _imageFile = null;
+      setState(() {
+
+      });
+    });
+
   }
 
 
-  _getGroupChatId()async{
+  _setGroupChatId()async{
     var sp = await SharedPreferences.getInstance();
     id = sp.get(SHARED_PREFERENCES_USER_ID);
     if(id.hashCode < friendId.hashCode){
