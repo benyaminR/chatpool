@@ -12,6 +12,10 @@ import 'package:chatpool/utils/Utils.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'dart:math' as Math;
+import 'package:image/image.dart' as Im;
 
 part 'package:chatpool/screens/Login.dart';
 part 'package:chatpool/utils/Authentication.dart';

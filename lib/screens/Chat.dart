@@ -120,7 +120,7 @@ class ChatScreenState extends State<ChatScreen>{
         margin: EdgeInsets.all(8.0),
         child: Row(
           children: <Widget>[
-            Flexible(
+            Expanded(
                 child: Container(
                   decoration: BoxDecoration(
                       color: INPUT_TEXT_FIELD_BACKGROUND_COLOR,
@@ -139,6 +139,8 @@ class ChatScreenState extends State<ChatScreen>{
                     controller: _textEditingController,
                   )
                       : Container(
+                    height: MediaQuery.of(context).size.height/2,
+                    width: MediaQuery.of(context).size.width/2,
                     padding: EdgeInsets.all(10.0),
                     margin: EdgeInsets.all(2.0),
                     decoration: BoxDecoration(
@@ -174,7 +176,9 @@ class ChatScreenState extends State<ChatScreen>{
               ),
               onTap:(){
                 if(_imageFile!=null){
-                  _sendImage();
+                    _sendImage();
+
+
                 }else if(_textEditingController.value.text.isNotEmpty){
                   _sendMessage();
                 }
@@ -274,22 +278,32 @@ class ChatScreenState extends State<ChatScreen>{
     _textEditingController.clear();
   }
   _sendImage(){
-    print('imageFile: $_imageFile');
     var timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
-
-    //TODO sendImage
-
-    //upload image file
-    FirebaseStorage
-        .instance
-        .ref()
-        .child('/media/images/$groupId/$id+$timeStamp').putFile(_imageFile)
-        .events.listen((events){
-      if(events.type == StorageTaskEventType.success){
-        _saveImageUri(timeStamp);
-      }
+    _compressImage(_imageFile).then((compressedImage){
+      //upload image file
+      FirebaseStorage
+          .instance
+          .ref()
+          .child('/media/images/$groupId/$id+$timeStamp').putFile(compressedImage)
+          .events.listen((events){
+        if(events.type == StorageTaskEventType.success){
+          _saveImageUri(timeStamp);
+        }
+      });
     });
 
+
+  }
+
+  Future<File> _compressImage(File rawImage) async{
+    final tempDir = await getTemporaryDirectory();
+    final path = tempDir.path;
+    int rand = Math.Random().nextInt(10000);
+
+    Im.Image image = Im.decodeImage(rawImage.readAsBytesSync());
+    Im.Image smallerImage = Im.copyResize(image, 640);
+
+    return File('$path/$rand.jpg')..writeAsBytesSync(Im.encodeJpg(smallerImage,quality: 70));
   }
 
   _saveImageUri(String timeStamp){
