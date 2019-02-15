@@ -54,7 +54,6 @@ class MainScreenState extends State<MainScreen>{
   }
 
   Widget _mainScreenBody(){
-    print('id : $id(mainscreen)');
     return StreamBuilder(
       stream: _firestore
           .collection(USERS_COLLECTION)

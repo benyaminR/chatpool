@@ -87,6 +87,7 @@ class ChatScreenState extends State<ChatScreen>{
   Widget _chatSegment(){
     return Flexible(
       child:Container(
+          height: MediaQuery.of(context).size.height/1.1,
           child: StreamBuilder(
             stream: _firestore
                 .collection(MESSAGES_COLLECTION)             //Messages
