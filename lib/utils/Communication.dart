@@ -88,6 +88,7 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
       .getDocuments();
   final List<DocumentSnapshot> documents = result.documents;
 
+
   //create a new user if the user doesn't exists
   if(documents.length == 0) {
     await _firestore
@@ -98,9 +99,11 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
       USER_ABOUT_FIELD: null,                         //about
       USER_ID: firebase.uid,                          //id
       USER_PHOTO_URI: null,                           //userProfile
-      USER_EMAIL: firebase.email                      //email
+      USER_EMAIL: firebase.email,
+      USER_TOKEN : await FirebaseMessaging().getToken()
     });
   }
+
 
   //update or add with every login
   //add user id and profile image
@@ -109,8 +112,7 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
     var photoUri = documents[0][USER_PHOTO_URI];
     var name = documents[0][USER_DISPLAY_NAME];
     var about = documents[0][USER_ABOUT_FIELD];
-    print(about);
-    print(name);
+
     sp.setString(SHARED_PREFERENCES_USER_ID, id);
     sp.setString(SHARED_PREFERENCES_USER_PHOTO, photoUri != null ? photoUri : USER_IMAGE_PLACE_HOLDER);
     sp.setString(SHARED_PREFERENCES_USER_DISPLAY_NAME, name);

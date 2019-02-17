@@ -8,14 +8,15 @@ const String MAIN_SCREEN_APP_BAR_TITLE = 'main screen';
 ///Storage
 const String USERS_COLLECTION = 'users';
 const String USER_ABOUT_FIELD = 'about';
-const String USER_DISPLAY_NAME = 'display name';
+const String USER_DISPLAY_NAME = 'display_name';
 const String USER_ID = 'id';
-const String USER_PHOTO_URI = 'photo uri';
+const String USER_PHOTO_URI = 'photo_uri';
 const String USER_EMAIL = 'email';
 const String USER_FRIENDS = 'friends';
+const String USER_TOKEN = 'token';
 const String FRIENDS_COLLECTION = 'friends';
-const String FRIEND_ID = 'friend id';
-const String FRIEND_TIME_ADDED = 'time added';
+const String FRIEND_ID = 'friend_id';
+const String FRIEND_TIME_ADDED = 'time_added';
 ///SharedPreferences
 const String SHARED_PREFERENCES_USER_ID = "id";
 const String SHARED_PREFERENCES_USER_PHOTO = 'photo';

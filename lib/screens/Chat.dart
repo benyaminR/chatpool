@@ -336,9 +336,7 @@ class ChatScreenState extends State<ChatScreen>{
 
       });
     });
-
   }
-
 
   _setGroupChatId()async{
     var sp = await SharedPreferences.getInstance();
