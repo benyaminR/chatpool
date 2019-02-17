@@ -98,13 +98,23 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
       USER_DISPLAY_NAME: firebase.displayName,        //name
       USER_ABOUT_FIELD: null,                         //about
       USER_ID: firebase.uid,                          //id
-      USER_PHOTO_URI: null,                           //userProfile
+      USER_PHOTO_URI: USER_IMAGE_PLACE_HOLDER,                           //userProfile
       USER_EMAIL: firebase.email,
       USER_TOKEN : await FirebaseMessaging().getToken()
     });
   }
 
+  //permission for ios
+  FirebaseMessaging().requestNotificationPermissions();
+  FirebaseMessaging().configure(
+      onResume:(Map<String,dynamic> resume){
+      },
+      onMessage: (Map<String,dynamic> message){
 
+      },
+      onLaunch:(Map<String,dynamic> launch){
+      }
+  );
   //update or add with every login
   //add user id and profile image
   await SharedPreferences.getInstance().then((sp){
