@@ -88,7 +88,6 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
       .getDocuments();
   final List<DocumentSnapshot> documents = result.documents;
 
-
   //create a new user if the user doesn't exists
   if(documents.length == 0) {
     await _firestore
@@ -98,9 +97,10 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
       USER_DISPLAY_NAME: firebase.displayName,        //name
       USER_ABOUT_FIELD: null,                         //about
       USER_ID: firebase.uid,                          //id
-      USER_PHOTO_URI: USER_IMAGE_PLACE_HOLDER,                           //userProfile
+      USER_PHOTO_URI: USER_IMAGE_PLACE_HOLDER,        //userProfile
       USER_EMAIL: firebase.email,
-      USER_TOKEN : await FirebaseMessaging().getToken()
+      USER_TOKEN : await FirebaseMessaging().getToken(),
+      USER_STATUS : STATUS_ONLINE
     });
   }
 
@@ -115,6 +115,10 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
       onLaunch:(Map<String,dynamic> launch){
       }
   );
+
+  //update user status
+  setUserStatus(firebase.uid.toString(), STATUS_ONLINE);
+
   //update or add with every login
   //add user id and profile image
   await SharedPreferences.getInstance().then((sp){
@@ -137,4 +141,13 @@ Future deleteUser(String userId,String id) async{
       .collection(FRIENDS_COLLECTION)   //my friends
       .document(userId)                 //this friend
       .delete();                        //delete
+}
+
+Future setUserStatus(String id, String status)async{
+  return await _firestore
+      .collection(USERS_COLLECTION)
+      .document(id)
+      .updateData({
+    USER_STATUS:status
+  });
 }

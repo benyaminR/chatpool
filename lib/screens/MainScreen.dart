@@ -10,11 +10,14 @@ class MainScreenState extends State<MainScreen>{
 
 
   String id;
-
+@override
+  void deactivate() {
+    super.deactivate();
+    print('object deactivated');
+  }
   @override
   void initState() {
     super.initState();
-
     //get id
     SharedPreferences.getInstance().then((sp){
       setState(() {
@@ -148,5 +151,11 @@ class MainScreenState extends State<MainScreen>{
 
   void _showFriends(){
     Navigator.of(context).pushNamed('/main/friends');
+  }
+
+  @override
+  void dispose() {
+
+    super.dispose();
   }
 }

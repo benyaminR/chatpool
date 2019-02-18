@@ -50,25 +50,45 @@ class ChatScreenState extends State<ChatScreen>{
   }
 
   Widget _appBarTitle() {
-    return  Row(
-      children: <Widget>[
-        Container(
-          child: Material(
-            child: CachedNetworkImage(
-              placeholder: Container(
-                child: CircularProgressIndicator(),
+    return StreamBuilder(
+        stream: _firestore.collection(USERS_COLLECTION).document(friendId).snapshots(),
+        builder: (context,AsyncSnapshot<DocumentSnapshot>snapshot){
+          if(!snapshot.hasData)
+            return Text('error');
+          if(snapshot.connectionState == ConnectionState.waiting)
+            return CircularProgressIndicator();
+          return  Row(
+            children: <Widget>[
+              Container(
+                child: Material(
+                  child: CachedNetworkImage(
+                    placeholder: Container(
+                      child: CircularProgressIndicator(),
+                    ),
+                    imageUrl: friendPhotoUri,
+                    width: APP_BAR_IMAGE_WIDTH,
+                    height: APP_BAR_IMAGE_HEIGHT,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(APP_BAR_IMAGE_RADIUS)),
+                  clipBehavior: Clip.antiAlias,
+                ),
               ),
-              imageUrl: friendPhotoUri,
-              width: APP_BAR_IMAGE_WIDTH,
-              height: APP_BAR_IMAGE_HEIGHT,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(APP_BAR_IMAGE_RADIUS)),
-            clipBehavior: Clip.antiAlias,
-          ),
-        ),
-        Text(friendDisplayName)
-      ],
-    );
+              Container(
+                margin: EdgeInsets.only(left: 8.0),
+                child:Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 8.0),
+                      child:Text(friendDisplayName),
+                    ),
+                    Text(snapshot.data.data[USER_STATUS],style: TextStyle(fontSize: 10.0))
+                  ],
+                ),
+              )
+            ],
+          );
+        });
   }
 
   List<Widget> _appBarActions(){

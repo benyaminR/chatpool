@@ -64,7 +64,6 @@ class LoginScreenState extends State<LoginScreen>{
     await createUserProfile(firebaseUser).then((value){
       Navigator.of(context).pushReplacementNamed('/main');
     });
-
-
   }
+
 }
