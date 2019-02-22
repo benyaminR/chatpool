@@ -20,9 +20,6 @@ class ChatScreenState extends State<ChatScreen>{
   String friendPhotoUri;
   String groupId;
   String id;
-  String userStatus = STATUS_OFFLINE;
-
-  StreamSubscription<Event> stateListener;
 
   final TextEditingController _textEditingController = new TextEditingController();
 
@@ -31,68 +28,32 @@ class ChatScreenState extends State<ChatScreen>{
   @override
   void initState() {
     super.initState();
-
-     stateListener = FirebaseDatabase.instance.reference().child('/status/$friendId').onValue.listen((event){
-      setState(() {
-        userStatus = event.snapshot.value['state'];
-      });
-    });
-
-
     _init();
-
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
     backgroundColor: CHAT_SCREEN_BACKGROUND,
         body: (friendPhotoUri == null || friendDisplayName == null) ?
-          Center(
-              child:CircularProgressIndicator()
-          )
+          Center(child:CircularProgressIndicator())
             :
           _chatScreenBody(),
         appBar: AppBar(
-          title: (friendPhotoUri == null || friendDisplayName == null) ?  null :_appBarTitle(),
+          title: (friendPhotoUri == null || friendDisplayName == null) ? Text('loading')
+              :
+          ChatAppBar(
+            photoUri: friendPhotoUri,
+            displayName: friendDisplayName,
+            id:friendId
+            ),
+
           actions: _appBarActions(),
         )
     );
   }
 
-  Widget _appBarTitle() {
-    return Row(
-            children: <Widget>[
-              Container(
-                child: Material(
-                  child: CachedNetworkImage(
-                    placeholder: Container(
-                      child: CircularProgressIndicator(),
-                    ),
-                    imageUrl: friendPhotoUri,
-                    width: APP_BAR_IMAGE_WIDTH,
-                    height: APP_BAR_IMAGE_HEIGHT,
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(APP_BAR_IMAGE_RADIUS)),
-                  clipBehavior: Clip.antiAlias,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 8.0),
-                child:Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(top: 8.0),
-                      child:Text(friendDisplayName),
-                    ),
-                    Text(userStatus,style: TextStyle(fontSize: 10.0))
-                  ],
-                ),
-              )
-            ],
-          );
-  }
 
   List<Widget> _appBarActions(){
     return null;
@@ -379,6 +340,76 @@ class ChatScreenState extends State<ChatScreen>{
     });
   }
 
+}
+
+///appBar
+class ChatAppBar extends StatefulWidget{
+  final String photoUri;
+  final String displayName;
+  final String id;
+  ChatAppBar({this.photoUri, this.displayName,this.id});
+
+  @override
+  State<StatefulWidget> createState()=>ChatAppBarState(photoUri: photoUri,displayName: displayName,id: id);
+
+
+}
+class ChatAppBarState extends State<ChatAppBar>{
+
+  final String photoUri;
+  final String displayName;
+  final String id;
+  String userStatus = '';
+
+  StreamSubscription<Event> stateListener;
+
+  ChatAppBarState({this.photoUri,this.displayName,this.id});
+
+  @override
+  void initState() {
+    super.initState();
+    stateListener = FirebaseDatabase.instance.reference().child('/status/$id').onValue.listen((event){
+      setState(() {
+        userStatus = event.snapshot.value['state'];
+      });
+    });
+  }
+
+   @override
+  Widget build(BuildContext context) {
+    print('uri:$photoUri');
+     return Row(
+       children: <Widget>[
+         Container(
+           child: Material(
+             child: CachedNetworkImage(
+               placeholder: Container(
+                 child: CircularProgressIndicator(),
+               ),
+               imageUrl: photoUri,
+               width: APP_BAR_IMAGE_WIDTH,
+               height: APP_BAR_IMAGE_HEIGHT,
+             ),
+             borderRadius: BorderRadius.all(Radius.circular(APP_BAR_IMAGE_RADIUS)),
+             clipBehavior: Clip.antiAlias,
+           ),
+         ),
+         Container(
+           margin: EdgeInsets.only(left: 8.0),
+           child:Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: <Widget>[
+               Container(
+                 margin: EdgeInsets.only(top: 8.0),
+                 child:Text(displayName),
+               ),
+               Text(userStatus,style: TextStyle(fontSize: 10.0))
+             ],
+           ),
+         )
+       ],
+     );
+  }
   @override
   void dispose() {
     stateListener.cancel();
