@@ -79,6 +79,7 @@ final Firestore _firestore = Firestore.instance;
 ///creates a new users in the cloud with its firebase' userInfo
 Future<Null> createUserProfile(FirebaseUser firebase) async{
 
+  var id = firebase.uid;
 
   //get user's document
   final QuerySnapshot result = await Firestore
@@ -100,24 +101,39 @@ Future<Null> createUserProfile(FirebaseUser firebase) async{
       USER_PHOTO_URI: USER_IMAGE_PLACE_HOLDER,        //userProfile
       USER_EMAIL: firebase.email,
       USER_TOKEN : await FirebaseMessaging().getToken(),
-      USER_STATUS : STATUS_ONLINE
     });
   }
 
   //permission for ios
   FirebaseMessaging().requestNotificationPermissions();
-  FirebaseMessaging().configure(
-      onResume:(Map<String,dynamic> resume){
-      },
-      onMessage: (Map<String,dynamic> message){
-
-      },
-      onLaunch:(Map<String,dynamic> launch){
-      }
-  );
 
   //update user status
-  setUserStatus(firebase.uid.toString(), STATUS_ONLINE);
+  var userFirestoreRef = _firestore.collection(USERS_COLLECTION).document(id);
+
+  var firebaseDatabaseRef = FirebaseDatabase.instance.reference().child('.info/connected');
+  var userFirebaseDatabaseRef =FirebaseDatabase.instance.reference().child('/status/$id');
+  var isOfflineForFirestore = {
+    'state': 'offline',
+    'last_changed': DateTime.now().toIso8601String(),
+  };
+
+  var isOnlineForFirestore = {
+    'state': 'online',
+    'last_changed': DateTime.now().toIso8601String(),
+  };
+
+  firebaseDatabaseRef.onValue.listen((data){
+    print('data : ${data.snapshot.value}');
+    if(data.snapshot.value  == false){
+      userFirestoreRef.updateData({USER_STATUS:STATUS_OFFLINE});
+      return;
+    }
+    userFirebaseDatabaseRef.onDisconnect().set(isOfflineForFirestore).then((v) {
+      userFirebaseDatabaseRef.set(isOnlineForFirestore);
+      userFirestoreRef.updateData({USER_STATUS: STATUS_ONLINE});
+    });
+
+  });
 
   //update or add with every login
   //add user id and profile image
@@ -143,11 +159,4 @@ Future deleteUser(String userId,String id) async{
       .delete();                        //delete
 }
 
-Future setUserStatus(String id, String status)async{
-  return await _firestore
-      .collection(USERS_COLLECTION)
-      .document(id)
-      .updateData({
-    USER_STATUS:status
-  });
-}
+

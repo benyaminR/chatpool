@@ -17,6 +17,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:math' as Math;
 import 'package:image/image.dart' as Im;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 part 'package:chatpool/screens/Login.dart';
 part 'package:chatpool/utils/Authentication.dart';
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),

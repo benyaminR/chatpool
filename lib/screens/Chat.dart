@@ -20,6 +20,9 @@ class ChatScreenState extends State<ChatScreen>{
   String friendPhotoUri;
   String groupId;
   String id;
+  String userStatus = STATUS_OFFLINE;
+
+  StreamSubscription<Event> stateListener;
 
   final TextEditingController _textEditingController = new TextEditingController();
 
@@ -28,6 +31,14 @@ class ChatScreenState extends State<ChatScreen>{
   @override
   void initState() {
     super.initState();
+
+     stateListener = FirebaseDatabase.instance.reference().child('/status/$friendId').onValue.listen((event){
+      setState(() {
+        userStatus = event.snapshot.value['state'];
+      });
+    });
+
+
     _init();
 
   }
@@ -50,14 +61,7 @@ class ChatScreenState extends State<ChatScreen>{
   }
 
   Widget _appBarTitle() {
-    return StreamBuilder(
-        stream: _firestore.collection(USERS_COLLECTION).document(friendId).snapshots(),
-        builder: (context,AsyncSnapshot<DocumentSnapshot>snapshot){
-          if(!snapshot.hasData)
-            return Text('error');
-          if(snapshot.connectionState == ConnectionState.waiting)
-            return CircularProgressIndicator();
-          return  Row(
+    return Row(
             children: <Widget>[
               Container(
                 child: Material(
@@ -82,13 +86,12 @@ class ChatScreenState extends State<ChatScreen>{
                       margin: EdgeInsets.only(top: 8.0),
                       child:Text(friendDisplayName),
                     ),
-                    Text(snapshot.data.data[USER_STATUS],style: TextStyle(fontSize: 10.0))
+                    Text(userStatus,style: TextStyle(fontSize: 10.0))
                   ],
                 ),
               )
             ],
           );
-        });
   }
 
   List<Widget> _appBarActions(){
@@ -121,7 +124,7 @@ class ChatScreenState extends State<ChatScreen>{
                 return Text(snapshots.error);
               //if connecting show progressIndicator
               if(snapshots.connectionState == ConnectionState.waiting)
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               //show users
               else
                 return ListView.builder(
@@ -374,5 +377,11 @@ class ChatScreenState extends State<ChatScreen>{
     friendPhotoUri = document[USER_PHOTO_URI] != null ?  document[USER_PHOTO_URI] : USER_IMAGE_PLACE_HOLDER;
     setState(() {
     });
+  }
+
+  @override
+  void dispose() {
+    stateListener.cancel();
+    super.dispose();
   }
 }

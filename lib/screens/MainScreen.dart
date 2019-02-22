@@ -8,13 +8,7 @@ class MainScreen extends StatefulWidget{
 
 class MainScreenState extends State<MainScreen>{
 
-
   String id;
-@override
-  void deactivate() {
-    super.deactivate();
-    print('object deactivated');
-  }
   @override
   void initState() {
     super.initState();
@@ -24,6 +18,18 @@ class MainScreenState extends State<MainScreen>{
         id = sp.get(SHARED_PREFERENCES_USER_ID);
       });
     });
+
+    //check connection
+    Connectivity().onConnectivityChanged.listen((result){
+      if(result == ConnectivityResult.mobile){
+        print('USER IS ONLINE NOW(MOBILE)');
+      }else if(result == ConnectivityResult.wifi){
+        print('USER IS ONLINE NOW(WIFI)');
+      }else{
+        print('USER IS OFFLINE NOW');
+      }
+    });
+
   }
 
   @override
@@ -155,7 +161,8 @@ class MainScreenState extends State<MainScreen>{
 
   @override
   void dispose() {
-
     super.dispose();
   }
+
+
 }
