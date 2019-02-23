@@ -20,14 +20,19 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+
 part 'package:chatpool/screens/Login.dart';
 part 'package:chatpool/utils/Authentication.dart';
 part 'package:chatpool/screens/MainScreen.dart';
 part 'package:chatpool/screens/Friends.dart';
-part 'package:chatpool/screens/Chat.dart';
+part 'package:chatpool/screens/chatScreen/Chat.dart';
 part 'package:chatpool/utils/Communication.dart';
 part 'Me.dart';
 part 'Settings.dart';
+part 'package:chatpool/screens/chatScreen/ChatAppBar.dart';
+part 'package:chatpool/screens/chatScreen/ChatSegment.dart';
+part 'package:chatpool/screens/chatScreen/DeleteMessageDialog.dart';
+part 'package:chatpool/screens/chatScreen/InputSegment.dart';
 
 void main() => runApp(MyApp());
 
