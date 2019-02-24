@@ -16,7 +16,6 @@ class InputSegmentState extends State<InputSegment>{
   InputSegmentState(this.id,this.groupId,this.friendId);
 
   final TextEditingController _textEditingController = new TextEditingController();
-  var _imageFile;
 
   @override
   void initState() {
@@ -35,7 +34,7 @@ class InputSegmentState extends State<InputSegment>{
                     color: INPUT_TEXT_FIELD_BACKGROUND_COLOR,
                     borderRadius: BorderRadius.circular(INPUT_TEXT_FIELD_RADIUS)
                 ),
-                child: _imageFile == null ? TextField(
+                child: TextField(
                   autocorrect: true,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(INPUT_TEXT_FIELD_PADDING),
@@ -47,18 +46,6 @@ class InputSegmentState extends State<InputSegment>{
                   ),
                   controller: _textEditingController,
                 )
-                    : Container(
-                  height: MediaQuery.of(context).size.height/2,
-                  width: MediaQuery.of(context).size.width/2,
-                  padding: EdgeInsets.all(10.0),
-                  margin: EdgeInsets.all(2.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Image(
-                    image: FileImage(_imageFile),
-                  ),
-                ),
               )
           ),
           GestureDetector(
@@ -84,9 +71,7 @@ class InputSegmentState extends State<InputSegment>{
               child: Icon(Icons.send,color: SEND_BUTTON_ICON_COLOR,),
             ),
             onTap:(){
-              if(_imageFile!=null){
-                _sendImage();
-              }else if(_textEditingController.value.text.isNotEmpty){
+              if(_textEditingController.value.text.isNotEmpty){
                 _sendMessage();
               }
             },
@@ -98,11 +83,26 @@ class InputSegmentState extends State<InputSegment>{
   _sendMessage(){
     sendMessage(_textEditingController.value.text, groupId, id, friendId);
     _textEditingController.clear();
-
   }
-  _sendImage(){
+
+
+  _pickImage(){
+    ImagePicker.pickImage(source: ImageSource.gallery).then((imageFile) {
+      Navigator.push(
+          context, PageRouteBuilder(pageBuilder: (context, anim1, anim2) =>
+          SendMedia(
+            imageFile: imageFile, groupId: groupId, id: id, friendId: friendId,)
+      )).then((v){
+        if(v[0])
+          _sendImage(imageFile);
+      });
+
+    });
+  }
+
+  _sendImage(File imageFile){
     var timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
-    _compressImage(_imageFile).then((compressedImage){
+    _compressImage(imageFile).then((compressedImage){
       //upload image file
       FirebaseStorage
           .instance
@@ -120,7 +120,6 @@ class InputSegmentState extends State<InputSegment>{
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
     int rand = Math.Random().nextInt(10000);
-
     Im.Image image = Im.decodeImage(rawImage.readAsBytesSync());
     Im.Image smallerImage = Im.copyResize(image, 640);
 
@@ -128,8 +127,6 @@ class InputSegmentState extends State<InputSegment>{
   }
 
   _saveImageUri(String timeStamp){
-    print('firestore timestamp :$timeStamp');
-    print('saved dest :/media/images/$groupId/$id+$timeStamp');
     FirebaseStorage
         .instance
         .ref()
@@ -152,18 +149,6 @@ class InputSegmentState extends State<InputSegment>{
               MESSAGE_ID_TO : friendId
             });
       });
-      //clear inputSegment
-      _imageFile = null;
-      setState(() {
-
-      });
-    });
-  }
-
-  _pickImage(){
-    ImagePicker.pickImage(source: ImageSource.gallery).then((imageFile){
-      _imageFile = imageFile;
-      setState(() {});
     });
   }
 

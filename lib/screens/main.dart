@@ -21,6 +21,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
+
 part 'package:chatpool/screens/Login.dart';
 part 'package:chatpool/utils/Authentication.dart';
 part 'package:chatpool/screens/MainScreen.dart';
@@ -33,6 +34,7 @@ part 'package:chatpool/screens/chatScreen/ChatAppBar.dart';
 part 'package:chatpool/screens/chatScreen/ChatSegment.dart';
 part 'package:chatpool/screens/chatScreen/DeleteMessageDialog.dart';
 part 'package:chatpool/screens/chatScreen/InputSegment.dart';
+part 'package:chatpool/screens/chatScreen/SendMedia.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,7 +50,8 @@ class MyApp extends StatelessWidget {
         '/main/friends' : (context) => FriendsScreen(),
         '/main/chat' : (context) => ChatScreen(),
         '/main/settings' : (context) => SettingsScreen(),
-        '/main/settings/me' :(context) => MeScreen()
+        '/main/settings/me' :(context) => MeScreen(),
+        '/main/chat/sendMedia':(context) => SendMedia()
       },
     );
   }
