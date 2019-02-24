@@ -10,7 +10,6 @@ class ChatSegment extends StatefulWidget{
 class ChatSegmentState extends State<ChatSegment>{
   final String id;
   final String groupId;
-
   ChatSegmentState(this.groupId,this.id);
   @override
   Widget build(BuildContext context) {
@@ -55,7 +54,7 @@ class ChatSegmentState extends State<ChatSegment>{
           children: <Widget>[
             Flexible(
               child: Container(
-                  width: MESSAGE_WIDTH,
+                 width: MESSAGE_WIDTH,
                   padding: EdgeInsets.all(MESSAGE_PADDING),
                   margin: EdgeInsets.all(MESSAGE_MARGIN),
                   decoration: BoxDecoration(
@@ -68,14 +67,16 @@ class ChatSegmentState extends State<ChatSegment>{
                           alignment: Alignment.centerLeft,
                           child: snapshot[MESSAGE_TYPE]== MESSAGE_TYPE_PHOTO?Image(image: CachedNetworkImageProvider(
                               snapshot[MESSAGE_CONTENT]))
-                              :
-                          Text(snapshot[MESSAGE_CONTENT],
-                            style: TextStyle(
-                                fontSize: MESSAGE_FONT_SIZE,
-                                color: MESSAGE_FONT_COLOR
-                            ),
+                              : snapshot[MESSAGE_TYPE] == MESSAGE_TYPE_TEXT?
+                              AutoSizeText(
+                                snapshot[MESSAGE_CONTENT],
+                                style: TextStyle(
+                                    fontSize: MESSAGE_FONT_SIZE,
+                                    color: MESSAGE_FONT_COLOR
+                                ),
                           )
-
+                              :
+                          Text('sticker')
                       ),
                       Align(
                         alignment:Alignment.centerRight ,
@@ -97,6 +98,7 @@ class ChatSegmentState extends State<ChatSegment>{
   _showDeleteMessageDialog(DocumentSnapshot snapshot){
     if(snapshot[MESSAGE_ID_FROM]== id ){
       showDialog(context: context,builder: (context){
+        print('message timestamp : ${snapshot[MESSAGE_TIMESTAMP]}');
         return DeleteMessageDialog(groupId: groupId,timestamp: snapshot[MESSAGE_TIMESTAMP]);
       });
     }

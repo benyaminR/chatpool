@@ -26,6 +26,7 @@ dependencies:
   firebase_messaging: ^3.0.1
   connectivity: ^0.4.2
   firebase_database: ^2.0.1+1
+  auto_size_text: ^1.0.0
 
   flutter:
     sdk: flutter

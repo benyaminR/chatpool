@@ -19,7 +19,7 @@ import 'package:image/image.dart' as Im;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_database/firebase_database.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 
 part 'package:chatpool/screens/Login.dart';
 part 'package:chatpool/utils/Authentication.dart';

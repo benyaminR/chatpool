@@ -38,12 +38,24 @@ sendMessage(String msg,String groupId,String id,String friendId){
 }
 
 _deleteMessage(String timestamp,String groupId) async{
+  // path : /media/images/$groupId/$idFrom+timestamp
+  var imageName = '${groupId.split('-')[0]}+$timestamp';
+
+  //delete image reference
   await _firestore
       .collection(MESSAGES_COLLECTION)
       .document(groupId)
       .collection(groupId)
       .document(timestamp)
       .delete();
+
+  // delete image file
+  await FirebaseStorage
+      .instance
+      .ref()
+      .child('/media/images/$groupId/$imageName')
+      .delete();
+  
 }
 
 addFriend(String friendId,String id) async{

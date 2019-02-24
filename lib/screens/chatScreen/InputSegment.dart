@@ -19,6 +19,11 @@ class InputSegmentState extends State<InputSegment>{
   var _imageFile;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(8.0),
@@ -123,6 +128,8 @@ class InputSegmentState extends State<InputSegment>{
   }
 
   _saveImageUri(String timeStamp){
+    print('firestore timestamp :$timeStamp');
+    print('saved dest :/media/images/$groupId/$id+$timeStamp');
     FirebaseStorage
         .instance
         .ref()
