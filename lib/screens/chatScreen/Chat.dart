@@ -27,17 +27,19 @@ class ChatScreenState extends State<ChatScreen>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-    backgroundColor: CHAT_SCREEN_BACKGROUND,
+    return MaterialApp(
+      home:  Scaffold(
+        backgroundColor: CHAT_SCREEN_BACKGROUND,
         body: (friendPhotoUri == null || friendDisplayName == null) ? Center(child:CircularProgressIndicator()) : _chatScreenBody(),
         appBar: AppBar(
           title: (friendPhotoUri == null || friendDisplayName == null) ? null : ChatAppBar(
-            photoUri: friendPhotoUri,
-            displayName: friendDisplayName,
-            id:friendId
-            ),
+              photoUri: friendPhotoUri,
+              displayName: friendDisplayName,
+              id:friendId
+          ),
           actions: _appBarActions(),
-        )
+        ),
+      ),
     );
   }
 

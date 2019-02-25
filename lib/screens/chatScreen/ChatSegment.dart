@@ -1,5 +1,6 @@
 part of chat_pool;
 class ChatSegment extends StatefulWidget{
+
   final String id;
   final String groupId;
   ChatSegment({@required this.groupId,@required this.id});
@@ -36,9 +37,7 @@ class ChatSegmentState extends State<ChatSegment>{
                   reverse: true,
                   itemCount: snapshots.data.documents.length,
                   itemBuilder:(context,index){
-                    var message = snapshots.data.documents[index];
-                    print(message.data[MESSAGE_CONTENT]);
-                    return _buildMessage(message,id,groupId);
+                    return _buildMessage(snapshots.data.documents[index],id,groupId);
                   },
                 );
             },
@@ -55,6 +54,7 @@ class ChatSegmentState extends State<ChatSegment>{
             Flexible(
               child: Container(
                  width: MESSAGE_WIDTH,
+                  height: snapshot[MESSAGE_TYPE] == MESSAGE_TYPE_PHOTO ? MESSAGE_WIDTH:null,
                   padding: EdgeInsets.all(MESSAGE_PADDING),
                   margin: EdgeInsets.all(MESSAGE_MARGIN),
                   decoration: BoxDecoration(
@@ -65,9 +65,21 @@ class ChatSegmentState extends State<ChatSegment>{
                     children: <Widget>[
                       Align(
                           alignment: Alignment.centerLeft,
-                          child: snapshot[MESSAGE_TYPE]== MESSAGE_TYPE_PHOTO?Image(image: CachedNetworkImageProvider(
-                              snapshot[MESSAGE_CONTENT]))
-                              : snapshot[MESSAGE_TYPE] == MESSAGE_TYPE_TEXT?
+                          child: snapshot[MESSAGE_TYPE]== MESSAGE_TYPE_PHOTO ?
+                              AspectRatio(
+                                aspectRatio: 1.1,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      alignment: FractionalOffset.center,
+                                      fit: BoxFit.cover,
+                                        image: CachedNetworkImageProvider(
+                                          snapshot[MESSAGE_CONTENT],),)
+                                  ),
+                                ),
+                              )
+
+                              : snapshot[MESSAGE_TYPE] == MESSAGE_TYPE_TEXT ?
                               AutoSizeText(
                                 snapshot[MESSAGE_CONTENT],
                                 style: TextStyle(
@@ -78,13 +90,16 @@ class ChatSegmentState extends State<ChatSegment>{
                               :
                           Text('sticker')
                       ),
-                      Align(
-                        alignment:Alignment.centerRight ,
-                        child: Text(timeConverter(int.parse(snapshot[MESSAGE_TIMESTAMP])),
-                          style: TextStyle(
-                              fontSize: MESSAGE_DATE_FONT_SIZE,
-                              color: MESSAGE_FONT_COLOR
-                          ),),
+                      Container(
+                        margin: EdgeInsets.all(4.0),
+                        child: Align(
+                          alignment:Alignment.centerRight ,
+                          child: Text(timeConverter(int.parse(snapshot[MESSAGE_TIMESTAMP])),
+                            style: TextStyle(
+                                fontSize: MESSAGE_DATE_FONT_SIZE,
+                                color: MESSAGE_FONT_COLOR
+                            ),),
+                        ),
                       )
                     ],
                   )
@@ -98,7 +113,6 @@ class ChatSegmentState extends State<ChatSegment>{
   _showDeleteMessageDialog(DocumentSnapshot snapshot){
     if(snapshot[MESSAGE_ID_FROM]== id ){
       showDialog(context: context,builder: (context){
-        print('message timestamp : ${snapshot[MESSAGE_TIMESTAMP]}');
         return DeleteMessageDialog(groupId: groupId,timestamp: snapshot[MESSAGE_TIMESTAMP]);
       });
     }

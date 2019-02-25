@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
