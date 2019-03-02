@@ -35,6 +35,8 @@ part 'package:chatpool/screens/chatScreen/ChatSegment.dart';
 part 'package:chatpool/screens/chatScreen/DeleteMessageDialog.dart';
 part 'package:chatpool/screens/chatScreen/InputSegment.dart';
 part 'package:chatpool/screens/chatScreen/SendMedia.dart';
+part 'package:chatpool/screens/chatScreen/ShowImage.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -50,6 +52,7 @@ class MyApp extends StatelessWidget {
         '/main' : (context) => MainScreen(),
         '/main/friends' : (context) => FriendsScreen(),
         '/main/chat' : (context) => ChatScreen(),
+        '/main/chat/showImage' :(context) => ShowImage(),
         '/main/settings' : (context) => SettingsScreen(),
         '/main/settings/me' :(context) => MeScreen(),
         '/main/chat/sendMedia':(context) => SendMedia()

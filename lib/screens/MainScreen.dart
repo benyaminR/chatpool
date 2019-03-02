@@ -68,6 +68,7 @@ class MainScreenState extends State<MainScreen>{
           .collection(USERS_COLLECTION)
           .document(id)
           .collection(FRIENDS_COLLECTION)
+          .orderBy(FRIEND_TIME_ADDED)
           .snapshots(),
       builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> snapshot){
         if(snapshot.hasError)
@@ -93,6 +94,7 @@ class MainScreenState extends State<MainScreen>{
           return Center(child: CircularProgressIndicator(),);
         return ListTile(
           title: Text(snapshot.data.data[USER_DISPLAY_NAME]),
+          subtitle: Text(document[FRIEND_LATEST_MESSAGE] == null ? '...' :document[FRIEND_LATEST_MESSAGE]),
           leading: Container(
             margin: EdgeInsets.all(MAINSCREEN_FRIEND_PHOTO_MARGIN),
             child: Material(

@@ -20,6 +20,7 @@ const String STATUS_OFFLINE = 'offline';
 const String FRIENDS_COLLECTION = 'friends';
 const String FRIEND_ID = 'friend_id';
 const String FRIEND_TIME_ADDED = 'time_added';
+const String FRIEND_LATEST_MESSAGE = 'latest_message';
 ///SharedPreferences
 const String SHARED_PREFERENCES_USER_ID = "id";
 const String SHARED_PREFERENCES_USER_PHOTO = 'photo';

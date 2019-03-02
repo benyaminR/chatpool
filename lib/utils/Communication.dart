@@ -82,7 +82,8 @@ addFriend(String friendId,String id) async{
         .document(friendId)
         .setData({
       FRIEND_ID: friendId,
-      FRIEND_TIME_ADDED: time
+      FRIEND_TIME_ADDED: time,
+      FRIEND_LATEST_MESSAGE : ''
     });
   }
 }

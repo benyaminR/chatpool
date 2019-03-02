@@ -68,13 +68,16 @@ class ChatSegmentState extends State<ChatSegment>{
                           child: snapshot[MESSAGE_TYPE]== MESSAGE_TYPE_PHOTO ?
                               AspectRatio(
                                 aspectRatio: 1.1,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      alignment: FractionalOffset.center,
-                                      fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(
-                                          snapshot[MESSAGE_CONTENT],),)
+                                child: Hero(
+                                  tag:snapshot[MESSAGE_TIMESTAMP],
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          alignment: FractionalOffset.center,
+                                          fit: BoxFit.cover,
+                                          image: CachedNetworkImageProvider(
+                                            snapshot[MESSAGE_CONTENT],),)
+                                    ),
                                   ),
                                 ),
                               )
@@ -107,7 +110,8 @@ class ChatSegmentState extends State<ChatSegment>{
             ),
           ],
         ),
-        onLongPress:() => _showDeleteMessageDialog(snapshot)
+        onLongPress:()=>_showDeleteMessageDialog(snapshot),
+        onTap:()=>snapshot[MESSAGE_TYPE] == MESSAGE_TYPE_PHOTO ? _showImage(snapshot[MESSAGE_CONTENT],snapshot[MESSAGE_TIMESTAMP]):null,
     );
   }
   _showDeleteMessageDialog(DocumentSnapshot snapshot){
@@ -117,4 +121,8 @@ class ChatSegmentState extends State<ChatSegment>{
       });
     }
   }
+
+  _showImage(String imageUrl,String tag){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ShowImage(imageUrl: imageUrl,tag: tag,)));
+}
 }
