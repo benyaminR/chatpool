@@ -17,6 +17,7 @@ class ChatScreenState extends State<ChatScreen>{
   String friendPhotoUri;
   String groupId;
   String id;
+  String about;
   ChatScreenState({@required this.friendId});
 
   @override
@@ -27,18 +28,17 @@ class ChatScreenState extends State<ChatScreen>{
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home:  Scaffold(
-        backgroundColor: CHAT_SCREEN_BACKGROUND,
-        body: (friendPhotoUri == null || friendDisplayName == null) ? Center(child:CircularProgressIndicator()) : _chatScreenBody(),
-        appBar: AppBar(
-          title: (friendPhotoUri == null || friendDisplayName == null) ? null : ChatAppBar(
-              photoUri: friendPhotoUri,
-              displayName: friendDisplayName,
-              id:friendId
-          ),
-          actions: _appBarActions(),
+    return Scaffold(
+      backgroundColor: CHAT_SCREEN_BACKGROUND,
+      body: (friendPhotoUri == null || friendDisplayName == null) ? Center(child:CircularProgressIndicator()) : _chatScreenBody(),
+      appBar: AppBar(
+        title: (friendPhotoUri == null || friendDisplayName == null) ? null : ChatAppBar(
+            photoUri: friendPhotoUri,
+            displayName: friendDisplayName,
+            id:friendId,
+            about:about
         ),
+        actions: _appBarActions(),
       ),
     );
   }
@@ -73,6 +73,7 @@ class ChatScreenState extends State<ChatScreen>{
 
   _getFriendInfo()async{
     var document = await getFriendById(friendId);
+    about = document[USER_ABOUT_FIELD] != null ? document[USER_ABOUT_FIELD]:'...';
     friendDisplayName = document[USER_DISPLAY_NAME];
     friendPhotoUri = document[USER_PHOTO_URI] != null ?  document[USER_PHOTO_URI] : USER_IMAGE_PLACE_HOLDER;
     setState(() {
