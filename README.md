@@ -15,12 +15,12 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.io/docs), which offers tutorials, 
 samples, guidance on mobile development, and a full API reference.
 
-<h1>-Login with Google</h1>
-<img src="https://raw.githubusercontent.com/benyaminR/chatpool/master/20190305_162201.gif" height="40%" width="40%">
-<h1>-Add new friends</h1>
-<img src="https://raw.githubusercontent.com/benyaminR/chatpool/master/20190305_163008.gif" height="40%" width="40%">
-<h1>-Send message to you friends</h1>
-<img src="https://raw.githubusercontent.com/benyaminR/chatpool/master/20190305_163913.gif" height="40%" width="40%">
-<h1>-Edit your profile</h1>
-<img src="https://raw.githubusercontent.com/benyaminR/chatpool/master/20190305_164114.gif" height="40%" width="40%">
+<h1>Login with Google</h1>
+<img src="https://raw.githubusercontent.com/benyaminR/chatpool/master/20190305_162201.gif" height="30%" width="30%">
+<h1>Add new friends</h1>
+<img src="https://raw.githubusercontent.com/benyaminR/chatpool/master/20190305_163008.gif" height="30%" width="30%">
+<h1>Send message to you friends</h1>
+<img src="https://raw.githubusercontent.com/benyaminR/chatpool/master/20190305_163913.gif" height="30%" width="30%">
+<h1>Edit your profile</h1>
+<img src="https://raw.githubusercontent.com/benyaminR/chatpool/master/20190305_164114.gif" height="30%" width="30%">
 
